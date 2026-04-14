@@ -56,30 +56,24 @@ export default function LancamentoForm() {
     return contas.filter((c) => c.contaPaiId === Number(paiId));
   };
 
-  const handleMovimentacaoChange = (
-    id: string,
-    field: keyof MovimentacaoForm,
-    value: string | number,
-  ) => {
-    setMovimentacoes((prev) =>
-      prev.map((m) => {
-        if (m.id === id) {
-          // Se mudou o pai, reseta o filho
-          if (field === "contaPaiId") {
-            return {
-              ...m,
-              // Parse the value to a number, unless it's an empty string
-              contaPaiId: value === "" ? "" : Number(value),
-              contaId: "",
-            };
-          }
-
-          // Handle other fields generically
-          return { ...m, [field]: value };
+  const handleMovimentacaoChange = (id: string, field: keyof MovimentacaoForm, value: string) => {
+    setMovimentacoes(prev => prev.map(m => {
+      if (m.id === id) {
+        if (field === 'contaPaiId') {
+          return { ...m, contaPaiId: value === '' ? '' : Number(value), contaId: '' };
         }
-        return m;
-      }),
-    );
+        if (field === 'contaId') {
+          return { ...m, contaId: value === '' ? '' : Number(value) };
+        }
+        if (field === 'natureza') {
+          return { ...m, natureza: value as 'Debito' | 'Credito' };
+        }
+        if (field === 'valor') {
+          return { ...m, valor: value };
+        }
+      }
+      return m;
+    }));
   };
 
   const addMovimentacao = () => {
