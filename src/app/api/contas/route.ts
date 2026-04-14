@@ -47,15 +47,17 @@ export async function POST(request: Request) {
     });
 
     return NextResponse.json({ success: true, data: newConta }, { status: 201 });
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("Erro ao criar conta:", error);
     
     // Tratamento de erro único de código
-    if (error?.code === 'P2002') {
-      return NextResponse.json(
-        { success: false, error: "Uma conta com este código já existe." },
-        { status: 400 }
-      );
+    if (typeof error === 'object' && error !== null && 'code' in error) {
+      if ((error as { code: string }).code === 'P2002') {
+        return NextResponse.json(
+          { success: false, error: "Uma conta com este código já existe." },
+          { status: 400 }
+        );
+      }
     }
 
     return NextResponse.json(
